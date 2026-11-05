@@ -11,4 +11,11 @@ class Estado extends Model
     public $timestamps = false;
 
     protected $fillable = ['nombre_estado'];
+
+    // Relación con empleados
+    public function empleados()
+    {
+        return $this->hasMany(Empleado::class, 'estado_id_estado', 'id_estado');
+    }
 }
+
