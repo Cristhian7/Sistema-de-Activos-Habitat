@@ -3,6 +3,8 @@
 namespace App\Models\Traslado;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Equipo\Equipo;
+use App\Models\Empleado\Empleado;
 
 class Traslado extends Model
 {
@@ -20,11 +22,11 @@ class Traslado extends Model
 
     public function equipo()
     {
-        return $this->belongsTo(\App\Models\Equipo\Equipo::class, 'equipo_id_equipo', 'id_equipo');
+        return $this->belongsTo(Equipo::class, 'equipo_id_equipo', 'id_equipo');
     }
 
     public function empleado()
     {
-        return $this->belongsTo(\App\Models\Empleado\Empleado::class, 'empleado_id_empleado', 'id_empleado');
+        return $this->belongsTo(Empleado::class, 'empleado_id_empleado', 'id_empleado');
     }
 }

@@ -27,6 +27,6 @@ class Login extends Authenticatable
     // Relación con empleado
     public function empleado()
     {
-        return $this->belongsTo(\App\Models\Empleado::class, 'empleado_id_empleado', 'id_empleado');
+        return $this->belongsTo(\App\Models\Empleado\Empleado::class, 'empleado_id_empleado', 'id_empleado');
     }
 }

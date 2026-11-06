@@ -1,0 +1,14 @@
+Coloca aquí el logo de Hábitat para la Humanidad Guatemala.
+
+Nombre exacto del archivo:  logo-habitat.png
+Ruta final:                 public/img/logo-habitat.png
+
+Recomendaciones:
+- Formato PNG con fondo transparente.
+- Ancho sugerido: 400 a 600 px (se reescala solo en el documento).
+
+La vista de impresión del traslado (Traslado/print.blade.php) busca ese
+archivo automaticamente. Si no existe, muestra el nombre en texto como
+respaldo. Una vez que coloques el archivo, el logo aparecera al imprimir.
+
+Puedes borrar este archivo despues de subir el logo.

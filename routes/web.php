@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Equipo\EquipoController;
 use App\Http\Controllers\Empleado\EmpleadoController;
+use App\Http\Controllers\Traslado\TrasladoController;
 
 //------------------LOGIN------------------//
 // Redirigir la raíz al login si no está autenticado, o al dashboard si ya lo está
@@ -47,6 +48,21 @@ Route::delete('/empleados/{id}', [App\Http\Controllers\Empleado\EmpleadoControll
 Route::get('/traslados', [App\Http\Controllers\Traslado\TrasladoController::class, 'index'])->name('traslados.index');
 Route::get('/traslados/create', [App\Http\Controllers\Traslado\TrasladoController::class, 'create'])->name('traslados.create');
 Route::post('/traslados', [App\Http\Controllers\Traslado\TrasladoController::class, 'store'])->name('traslados.store');
+
+// Rutas AJAX de búsqueda (deben ir ANTES de /traslados/{id} para que no las capture el comodín)
+Route::get('/traslados/buscar-equipo', [TrasladoController::class, 'getEquipoByCodigo'])->name('traslados.buscarEquipo');
+Route::get('/traslados/buscar-empleado', [TrasladoController::class, 'getEmpleadoByL4'])->name('traslados.buscarEmpleado');
+
+Route::get('/traslados/{id}/imprimir', [App\Http\Controllers\Traslado\TrasladoController::class, 'imprimir'])->name('traslados.imprimir');
+Route::get('/traslados/{id}', [App\Http\Controllers\Traslado\TrasladoController::class, 'show'])->name('traslados.show');
 Route::get('/traslados/{id}/edit', [App\Http\Controllers\Traslado\TrasladoController::class, 'edit'])->name('traslados.edit');
 Route::put('/traslados/{id}', [App\Http\Controllers\Traslado\TrasladoController::class, 'update'])->name('traslados.update');
 Route::delete('/traslados/{id}', [App\Http\Controllers\Traslado\TrasladoController::class, 'destroy'])->name('traslados.destroy');
+
+//------------------MANTENIMIENTO------------------//
+Route::get('/mantenimientos', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'index'])->name('mantenimientos.index');
+Route::get('/mantenimientos/create', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'create'])->name('mantenimientos.create');
+Route::post('/mantenimientos', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'store'])->name('mantenimientos.store');
+Route::get('/mantenimientos/{id}/edit', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'edit'])->name('mantenimientos.edit');
+Route::put('/mantenimientos/{id}', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'update'])->name('mantenimientos.update');
+Route::delete('/mantenimientos/{id}', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'destroy'])->name('mantenimientos.destroy');

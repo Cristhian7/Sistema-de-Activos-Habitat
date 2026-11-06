@@ -137,13 +137,13 @@ class EquipoController extends Controller
     // Actualizar equipo
     public function update(Request $request, $id)
 {
-    $equipo = Equipo::findOrFail($id);
+   // dd($request->all());
 
     $request->validate([
         'codigo_contable'            => 'required|string|max:45|unique:equipo,codigo_contable,' . $id . ',id_equipo',
         'nombre_equipo'              => 'required|string|max:45',
         'tipo_equipo_id_tipo_equipo' => 'required|integer',
-        'marca_id'                   => 'required|integer', // <--- ¡Incluido y validado correctamente![cite: 11]
+        'marca_id_marca'             => 'required|integer', // <--- ¡Incluido y validado correctamente![cite: 11]
         'modelo_id_modelo'           => 'required|integer',
         'estado_id_estado'           => 'required|integer',
         'imagen_equipo'              => 'nullable|image|max:2048',
@@ -162,6 +162,8 @@ class EquipoController extends Controller
         'imagen_codigo.max'                   => 'La fotografía del código contable no debe superar los 2MB.',
     ]);
 
+
+    $equipo = Equipo::findOrFail($id);
     $data = $request->except(['_token', '_method']);
 
     // Manejo de la imagen del equipo
