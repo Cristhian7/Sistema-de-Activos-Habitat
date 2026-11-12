@@ -10,6 +10,13 @@
     </a>
 </div>
 
+@if ($errors->has('codigo_contable'))
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>{{ $errors->first('codigo_contable') }}</div>
+    </div>
+@endif
+
 <form action="{{ route('equipos.store') }}" method="POST" enctype="multipart/form-data" novalidate>
     @csrf
 
@@ -112,9 +119,9 @@
                     <div class="col-md-4">
                         <label for="estado_id_estado" class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
                         <select class="form-select bg-light" disabled>
-                            <option value="1" selected>Activo</option>
+                            <option value="{{ $estadoActivo->id_estado }}" selected>{{ $estadoActivo->nombre_estado }}</option>
                         </select>
-                        <input type="hidden" name="estado_id_estado" value="1">
+                        <input type="hidden" name="estado_id_estado" value="{{ $estadoActivo->id_estado }}">
                     </div>
                 </div>
             </div>

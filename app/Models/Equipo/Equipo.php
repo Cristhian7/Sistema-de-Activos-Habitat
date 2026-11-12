@@ -43,6 +43,16 @@ class Equipo extends Model
         return $this->belongsTo(\App\Models\Modelo\Modelo::class, 'modelo_id_modelo', 'id_modelo');
     }
 
+    // Traslado vigente: a quién está asignado el equipo hoy (null = disponible)
+    public function asignacionActual()
+    {
+        return $this->hasOne(\App\Models\Traslado\Traslado::class, 'equipo_id_equipo', 'id_equipo')
+            ->ofMany(['id_traslado' => 'max'], function ($query) {
+                // Vigente y con un empleado que no esté dado de baja
+                $query->whereNull('fecha_devolucion')->deEmpleadoActivo();
+            });
+    }
+
     // Relación con Estado
     public function estado()
     {

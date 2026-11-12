@@ -9,9 +9,11 @@
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2 fw-bold text-dark"><i class="bi bi-people me-2"></i>Listado de Empleados</h1>
+    @puede('empleados.crear')
     <a href="{{ route('empleados.create') }}" class="btn btn-primary btn-sm">
         <i class="bi bi-plus-lg me-1"></i> Nuevo Empleado
     </a>
+    @endpuede
 </div>
 
 <!-- Alerta de éxito si existe -->
@@ -43,7 +45,9 @@
                         <th class="py-3">Afiliado</th>
                         <th class="py-3">Rol</th>
                         <th class="py-3">Estado</th>
+                        @puede('empleados.editar', 'empleados.eliminar')
                         <th class="py-3 text-end pe-3">Acciones</th>
+                        @endpuede
                     </tr>
                 </thead>
                 <tbody>
@@ -60,16 +64,16 @@
                         <td>{{ $empleado->afiliado->nombre_afiliado ?? 'Sin afiliado' }}</td>
                         <td>{{ $empleado->rol->nombre_rol ?? 'Sin rol' }}</td>
                         <td>
-                            @if($empleado->estado_id_estado == 1)
-                                <span class="badge bg-success">Activo</span>
-                            @else
-                                <span class="badge bg-danger">Baja</span>
-                            @endif
+                            <span class="badge {{ $empleado->estado?->claseBadge() ?? 'bg-secondary' }}">{{ $empleado->estado->nombre_estado ?? 'N/A' }}</span>
                         </td>
+                        @puede('empleados.editar', 'empleados.eliminar')
                         <td class="text-end pe-3">
+                            @puede('empleados.editar')
                             <a href="{{ route('empleados.edit', $empleado->id_empleado) }}" class="btn btn-outline-primary btn-sm" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
+                            @endpuede
+                            @puede('empleados.eliminar')
                             <form action="{{ route('empleados.destroy', $empleado->id_empleado) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de dar de baja a este empleado?');">
                                 @csrf
                                 @method('DELETE')
@@ -77,7 +81,9 @@
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
+                            @endpuede
                         </td>
+                        @endpuede
                     </tr>
                     @empty
                     <tr>

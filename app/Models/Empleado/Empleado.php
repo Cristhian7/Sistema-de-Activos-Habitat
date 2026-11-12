@@ -22,6 +22,7 @@ class Empleado extends Model
         'afiliado_id_afiliado',
         'estado_id_estado',
         'rol_id_rol',
+        'fecha_baja',
     ];
 
     // Relaciones con las llaves foráneas

@@ -112,9 +112,13 @@
                     <div class="col-md-4">
                         <label for="estado_id_estado" class="form-label fw-semibold">Estado *</label>
                         <select class="form-select bg-light" disabled>
-                            <option value="1" selected>Activo</option>
+                            @foreach($estados as $estado)
+                                <option value="{{ $estado->id_estado }}" {{ $equipo->estado_id_estado == $estado->id_estado ? 'selected' : '' }}>
+                                    {{ $estado->nombre_estado }}
+                                </option>
+                            @endforeach
                         </select>
-                        <input type="hidden" name="estado_id_estado" value="{{ $equipo->estado_id_estado ?? 1 }}">
+                        <input type="hidden" name="estado_id_estado" value="{{ $equipo->estado_id_estado }}">
                     </div>
                 </div>
             </div>

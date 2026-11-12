@@ -11,9 +11,11 @@
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2 fw-bold text-dark"><i class="bi bi-laptop me-2"></i>Listado de Equipos</h1>
+    @puede('equipos.crear')
     <a href="{{ route('equipos.create') }}" class="btn btn-primary btn-sm">
         <i class="bi bi-plus-lg me-1"></i> Nuevo Equipo
     </a>
+    @endpuede
 </div>
 
 <!-- Alerta de éxito si existe -->
@@ -44,7 +46,10 @@
                         <th class="py-3">Modelo</th>
                         <th class="py-3">Especificaciones</th>
                         <th class="py-3">Estado</th>
+                        <th class="py-3">Asignación</th>
+                        @puede('equipos.editar', 'equipos.eliminar')
                         <th class="py-3 text-end pe-3">Acciones</th>
+                        @endpuede
                     </tr>
                 </thead>
                 <tbody>
@@ -63,16 +68,29 @@
                             </div>
                         </td>
                         <td>
-                            @if($equipo->estado_id_estado == 1)
-                                <span class="badge bg-success">Activo</span>
+                            <span class="badge {{ $equipo->estado?->claseBadge() ?? 'bg-secondary' }}">{{ $equipo->estado->nombre_estado ?? 'N/A' }}</span>
+                        </td>
+                        <td>
+                            {{-- Disponibilidad para asignar: dado de baja = no disponible; con traslado vigente = asignado; sin traslado vigente = disponible --}}
+                            @if(\App\Models\Estado\Estado::esBaja($equipo->estado_id_estado))
+                                <span class="badge bg-secondary" title="El equipo fue dado de baja y no se puede asignar">No disponible</span>
+                            @elseif($equipo->asignacionActual)
+                                <span class="badge bg-warning text-dark">Asignado</span>
+                                <div class="small text-muted mt-1">
+                                    {{ $equipo->asignacionActual->empleado->nombre_empleado ?? '' }} {{ $equipo->asignacionActual->empleado->apellido_empleado ?? '' }}
+                                </div>
                             @else
-                                <span class="badge bg-danger">Baja</span>
+                                <span class="badge bg-success" title="Se puede asignar a un empleado">Disponible</span>
                             @endif
                         </td>
+                        @puede('equipos.editar', 'equipos.eliminar')
                         <td class="text-end pe-3">
+                            @puede('equipos.editar')
                             <a href="{{ route('equipos.edit', $equipo->id_equipo) }}" class="btn btn-outline-primary btn-sm" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
+                            @endpuede
+                            @puede('equipos.eliminar')
                             <form action="{{ route('equipos.destroy', $equipo->id_equipo) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este equipo?');">
                                 @csrf
                                 @method('DELETE')
@@ -80,17 +98,19 @@
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
+                            @endpuede
                         </td>
+                        @endpuede
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-4">No hay equipos registrados actualmente.</td>
+                        <td colspan="9" class="text-center text-muted py-4">No hay equipos registrados actualmente.</td>
                     </tr>
                     @endforelse
 
                     <!-- Fila oculta por defecto para cuando no hay coincidencias en la búsqueda -->
                     <tr id="noResultsRow" style="display: none;">
-                        <td colspan="8" class="text-center text-muted py-4">
+                        <td colspan="9" class="text-center text-muted py-4">
                             <i class="bi bi-search me-2"></i>No se encontraron equipos coincidentes con la búsqueda.
                         </td>
                     </tr>

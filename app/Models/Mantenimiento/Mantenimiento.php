@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Mantenimiento;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Equipo\Equipo;
+use App\Models\Empleado\Empleado;
 
 class Mantenimiento extends Model
 {
@@ -12,14 +14,17 @@ class Mantenimiento extends Model
     protected $table = 'mantenimiento';
     protected $primaryKey = 'id_mantenimiento';
     
-    // Si tu tabla no usa los timestamps por defecto (created_at / updated_at), descomenta la siguiente línea:
-    // public $timestamps = false;
+    // La tabla no tiene created_at / updated_at
+    public $timestamps = false;
 
     protected $fillable = [
         'equipo_id_equipo',
         'empleado_id_empleado',
+        'tecnico_id_empleado',
         'descripcion',
         'fecha_mantenimiento',
+        'imagen_mantenimiento_1',
+        'imagen_mantenimiento_2',
     ];
 
     // Relación con el equipo
@@ -28,9 +33,15 @@ class Mantenimiento extends Model
         return $this->belongsTo(Equipo::class, 'equipo_id_equipo', 'id_equipo');
     }
 
-    // Relación con el empleado (técnico o responsable)
+    // Empleado al que corresponde el mantenimiento
     public function empleado()
     {
         return $this->belongsTo(Empleado::class, 'empleado_id_empleado', 'id_empleado');
+    }
+
+    // Técnico que realizó el mantenimiento (usuario que lo registró)
+    public function tecnico()
+    {
+        return $this->belongsTo(Empleado::class, 'tecnico_id_empleado', 'id_empleado');
     }
 }

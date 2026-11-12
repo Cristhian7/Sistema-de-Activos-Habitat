@@ -97,13 +97,13 @@
                     
                     <!-- Campo visual bloqueado para el usuario -->
                     <select class="form-select bg-light" id="estado_id_estado" disabled>
-                        <option value="{{ $estadoActivo->id_estado ?? 1 }}" selected>
-                            {{ $estadoActivo->nombre_estado ?? 'Activo' }}
+                        <option value="{{ $estadoActivo->id_estado }}" selected>
+                            {{ $estadoActivo->nombre_estado }}
                         </option>
                     </select>
 
                     <!-- Campo oculto para asegurar que el ID se envíe al controlador al hacer Submit -->
-                    <input type="hidden" name="estado_id_estado" value="{{ $estadoActivo->id_estado ?? 1 }}">
+                    <input type="hidden" name="estado_id_estado" value="{{ $estadoActivo->id_estado }}">
                 </div>
             </div>
 

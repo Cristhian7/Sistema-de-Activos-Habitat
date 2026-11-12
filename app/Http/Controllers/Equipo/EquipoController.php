@@ -16,7 +16,7 @@ class EquipoController extends Controller
     // Listado de equipos
     public function index()
     {
-        $equipos = Equipo::with(['tipoEquipo', 'estado', 'modelo.marca'])->get();
+        $equipos = Equipo::with(['tipoEquipo', 'estado', 'modelo.marca', 'asignacionActual.empleado'])->get();
         return view('equipo.index', compact('equipos'));
     }
 
@@ -27,13 +27,20 @@ class EquipoController extends Controller
         $marcas = Marca::all();
         $modelos = Modelo::all();
         $estados = Estado::all();
+        // Estado inicial de todo equipo nuevo, leído de la tabla estado
+        $estadoActivo = Estado::findOrFail(Estado::idActivo());
 
-        return view('equipo.create', compact('tipos', 'marcas', 'modelos', 'estados'));
+        return view('equipo.create', compact('tipos', 'marcas', 'modelos', 'estados', 'estadoActivo'));
     }
 
     // Guardar nuevo equipo
     public function store(Request $request)
 {
+    // Normaliza el código (sin espacios y en mayúsculas) para que no se cuelen duplicados como "ce-04728 "
+    $request->merge([
+        'codigo_contable' => strtoupper(trim((string) $request->input('codigo_contable'))),
+    ]);
+
     $validator = Validator::make($request->all(), [
         'codigo_contable' => 'required|string|max:45|unique:equipo',
         'nombre_equipo' => 'required|string|max:45',
@@ -57,7 +64,7 @@ class EquipoController extends Controller
     ], [
         // Mensajes personalizados
         'codigo_contable.required' => 'El código contable es obligatorio.',
-        'codigo_contable.unique' => 'Este código contable ya está registrado en el sistema.',
+        'codigo_contable.unique' => 'El código contable ya existe. No se pueden registrar dos equipos con el mismo código.',
         'nombre_equipo.required' => 'El nombre del equipo es obligatorio.',
         'tipo_equipo_id_tipo_equipo.required' => 'Debe seleccionar un tipo de equipo.',
         'marca_id_marca.required' => 'Debe seleccionar una marca.',
@@ -98,7 +105,8 @@ class EquipoController extends Controller
     }
 
     $data = $request->all();
-    $data['estado_id_estado'] = 1;
+    // Todo equipo nuevo nace Activo (id leído de la tabla estado)
+    $data['estado_id_estado'] = Estado::idActivo();
 
     // Procesar imagen del equipo (si se subió archivo nuevo o si se recupera del respaldo temporal)
     if ($request->hasFile('imagen_equipo')) {
@@ -139,6 +147,10 @@ class EquipoController extends Controller
 {
    // dd($request->all());
 
+    $request->merge([
+        'codigo_contable' => strtoupper(trim((string) $request->input('codigo_contable'))),
+    ]);
+
     $request->validate([
         'codigo_contable'            => 'required|string|max:45|unique:equipo,codigo_contable,' . $id . ',id_equipo',
         'nombre_equipo'              => 'required|string|max:45',
@@ -151,7 +163,7 @@ class EquipoController extends Controller
     ], [
         // Mensajes personalizados en español
         'codigo_contable.required'            => 'El código contable es obligatorio.',
-        'codigo_contable.unique'              => 'Este código contable ya se encuentra registrado.',
+        'codigo_contable.unique'              => 'El código contable ya existe. No se pueden registrar dos equipos con el mismo código.',
         'nombre_equipo.required'              => 'El nombre del equipo es obligatorio.',
         'tipo_equipo_id_tipo_equipo.required' => 'Debe seleccionar un tipo de equipo.',
         'marca_id.required'                   => 'Debe seleccionar una marca.',
@@ -191,7 +203,7 @@ class EquipoController extends Controller
         $equipo = Equipo::findOrFail($id);
         //$equipo->delete();
 
-        $equipo->update([ 'estado_id_estado' => 2 ]); // Cambiar el estado a "Inactivo" (id_estado = 2)
+        $equipo->update([ 'estado_id_estado' => Estado::idBaja() ]); // Estado "Baja" leído de la tabla estado
 
         return redirect()->route('equipos.index')->with('success', 'Equipo dado de baja exitosamente.');
     }

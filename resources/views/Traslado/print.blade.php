@@ -229,10 +229,9 @@
         $logoPath = public_path('img/logo-habitat.png');
         $logoExiste = file_exists($logoPath);
 
-        $nombreTecnico = $tecnico?->empleado
-            ? trim(($tecnico->empleado->nombre_empleado ?? '') . ' ' . ($tecnico->empleado->apellido_empleado ?? ''))
-            : ($tecnico->usuario ?? 'Técnico');
-        $afiliadoTecnico = $tecnico?->empleado?->afiliado?->nombre_afiliado ?? '';
+        // Técnico que realizó el traslado (empleado guardado al registrarlo)
+        $nombreTecnico = trim(($tecnico->nombre_empleado ?? '') . ' ' . ($tecnico->apellido_empleado ?? ''));
+        $afiliadoTecnico = $tecnico->afiliado->nombre_afiliado ?? '';
 
         $nombreEmpleado = trim(($traslado->empleado->nombre_empleado ?? '') . ' ' . ($traslado->empleado->apellido_empleado ?? ''));
         $afiliadoEmpleado = $traslado->empleado->afiliado->nombre_afiliado ?? '';

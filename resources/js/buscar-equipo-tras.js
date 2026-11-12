@@ -11,6 +11,33 @@ document.addEventListener('DOMContentLoaded', function () {
         if (el) el.textContent = valor ?? 'N/A';
     }
 
+    // Aviso: al crear un traslado de un equipo que ya tiene dueño, se le quitará al anterior
+    const aviso = document.getElementById('avisoReasignacion');
+
+    function mostrarAviso(data) {
+        if (!aviso) return;
+
+        aviso.textContent = '';
+
+        if (inputCodigo.dataset.modoCrear === '1' && data && data.asignado_vigente) {
+            const icono = document.createElement('i');
+            icono.className = 'bi bi-exclamation-triangle-fill me-1';
+
+            const nombre = document.createElement('strong');
+            nombre.textContent = data.asignado_a || 'otro empleado';
+
+            aviso.append(
+                icono,
+                'Este equipo está asignado actualmente a ',
+                nombre,
+                '. Al guardar el traslado se le quitará y quedará registrada su devolución.'
+            );
+            aviso.classList.remove('d-none');
+        } else {
+            aviso.classList.add('d-none');
+        }
+    }
+
     function mostrarImagen(imgId, wrapperId, src) {
         const img = document.getElementById(imgId);
         const wrapper = document.getElementById(wrapperId);
@@ -30,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (codigo === '') {
             ultimoCodigoBuscado = null;
+            mostrarAviso(null);
             if (infoEquipo) infoEquipo.style.display = 'none';
             return;
         }
@@ -72,8 +100,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 mostrarImagen('imgEquipo', 'wrapImgEquipo', data.imagen_equipo);
                 mostrarImagen('imgCodigo', 'wrapImgCodigo', data.imagen_codigo);
 
+                mostrarAviso(data);
+
                 if (infoEquipo) infoEquipo.style.display = 'block';
             } else {
+                mostrarAviso(null);
                 if (infoEquipo) infoEquipo.style.display = 'none';
                 alert('No se encontró ningún equipo con ese código.');
             }

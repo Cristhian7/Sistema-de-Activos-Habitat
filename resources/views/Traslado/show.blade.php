@@ -10,6 +10,19 @@
     </a>
 </div>
 
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@include('partials.revision-notificacion', ['tipo' => 'traslado', 'registroId' => $traslado->id_traslado])
+
+<div class="mb-4">
+    @include('partials.documento-firmado', ['registro' => $traslado, 'tipo' => 'traslados'])
+</div>
+
 <div class="row g-4">
     <!-- Datos del Traslado -->
     <div class="col-md-12">
@@ -23,6 +36,46 @@
                 <div class="col-md-4">
                     <div class="text-muted small">Motivo del Traslado</div>
                     <div class="fw-semibold">{{ $traslado->motivo_traslado ?? 'N/A' }}</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Situación</div>
+                    <div class="fw-semibold">
+                        @if($traslado->vigente)
+                            <span class="badge bg-success">Vigente</span>
+                        @else
+                            <span class="badge bg-secondary">Devuelto el {{ \Carbon\Carbon::parse($traslado->fecha_devolucion)->format('d/m/Y') }}</span>
+                        @endif
+                    </div>
+                </div>
+                @unless($traslado->vigente)
+                    <div class="col-md-4">
+                        <div class="text-muted small">Causa de la devolución</div>
+                        <div class="fw-semibold">{{ $traslado->causa_texto }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted small">Motivo de la devolución</div>
+                        <div class="fw-semibold">{{ $traslado->motivo_devolucion ?? 'N/A' }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted small">Devolución registrada por</div>
+                        <div class="fw-semibold">
+                            @if($traslado->tecnicoDevolucion)
+                                {{ $traslado->tecnicoDevolucion->nombre_empleado }} {{ $traslado->tecnicoDevolucion->apellido_empleado }}
+                            @else
+                                N/A
+                            @endif
+                        </div>
+                    </div>
+                @endunless
+                <div class="col-md-4">
+                    <div class="text-muted small">Técnico que realizó el traslado</div>
+                    <div class="fw-semibold">
+                        @if($traslado->tecnico)
+                            {{ $traslado->tecnico->nombre_empleado }} {{ $traslado->tecnico->apellido_empleado }}
+                        @else
+                            N/A
+                        @endif
+                    </div>
                 </div>
                 <div class="col-md-12">
                     <div class="text-muted small">Descripción / Observaciones</div>
@@ -150,8 +203,10 @@
     <a href="{{ route('traslados.imprimir', $traslado->id_traslado) }}" class="btn btn-success px-4 py-2 fw-semibold" target="_blank">
         <i class="bi bi-printer me-1"></i> Imprimir
     </a>
-    <a href="{{ route('traslados.edit', $traslado->id_traslado) }}" class="btn btn-primary px-4 py-2 fw-semibold">
-        <i class="bi bi-pencil me-1"></i> Editar Traslado
-    </a>
+    @if($traslado->vigente && \App\Support\Permisos::puede('traslados.editar'))
+        <a href="{{ route('traslados.edit', $traslado->id_traslado) }}" class="btn btn-primary px-4 py-2 fw-semibold">
+            <i class="bi bi-pencil me-1"></i> Editar Traslado
+        </a>
+    @endif
 </div>
 @endsection

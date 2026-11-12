@@ -9,6 +9,9 @@ use App\Models\Puesto\Puesto;
 use App\Models\Afiliado\Afiliado;
 use App\Models\Estado\Estado;
 use App\Models\Rol\Rol;
+use App\Models\Traslado\Traslado;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EmpleadoController extends Controller
 {
@@ -36,8 +39,8 @@ class EmpleadoController extends Controller
         $afiliados = Afiliado::all();
         $roles = Rol::all();
         
-        // Buscamos el estado Activo (asumiendo que se llama 'Activo' o puedes usar su ID fijo, por ejemplo 1)
-        $estadoActivo = Estado::where('nombre_estado', 'like', '%Activo%')->first();
+        // Estado Activo leído de la tabla estado
+        $estadoActivo = Estado::findOrFail(Estado::idActivo());
 
         return view('Empleado.create', compact('puestos', 'afiliados', 'roles', 'estadoActivo'));
     }
@@ -46,7 +49,7 @@ class EmpleadoController extends Controller
     public function store(Request $request)
     {
         // Forzamos el estado activo si el campo está bloqueado/deshabilitado en el request
-        $request->merge(['estado_id_estado' => 1]); // Cambia el '1' por el ID real de tu estado Activo
+        $request->merge(['estado_id_estado' => Estado::idActivo()]); // ID del estado Activo desde la tabla estado
 
         $request->validate([
             'nombre_empleado' => 'required|string|max:100',
@@ -90,7 +93,16 @@ class EmpleadoController extends Controller
             'estado_id_estado' => 'required|exists:estado,id_estado',
         ]);
 
-        $empleado->update($request->all());
+        $datos = $request->except('fecha_baja');
+
+        // La fecha de baja se lleva sola: se fija al pasar a Baja y se limpia si vuelve a otro estado
+        if (Estado::esBaja($request->estado_id_estado)) {
+            $datos['fecha_baja'] = $empleado->fecha_baja ?? now()->toDateString();
+        } else {
+            $datos['fecha_baja'] = null;
+        }
+
+        $empleado->update($datos);
 
         return redirect()->route('empleados.index')->with('success', 'Empleado actualizado exitosamente.');
     }
@@ -102,8 +114,38 @@ class EmpleadoController extends Controller
       $empleado = Empleado::findOrFail($id);
         //$equipo->delete();
 
-        $empleado->update([ 'estado_id_estado' => 2 ]); // Cambiar el estado a "Inactivo" (id_estado = 2)
+        // Al darse de baja el empleado, el equipo que tenía asignado se libera:
+        // el traslado queda finalizado y el equipo disponible para asignar a otro empleado.
+        $equiposLiberados = DB::transaction(function () use ($empleado) {
+            $vigentes = Traslado::vigentes()
+                ->where('empleado_id_empleado', $empleado->id_empleado)
+                ->with('equipo')
+                ->get();
 
-        return redirect()->route('empleados.index')->with('success', 'Empleado dado de baja exitosamente.');
+            foreach ($vigentes as $traslado) {
+                $traslado->update([
+                    'fecha_devolucion' => now()->toDateString(),
+                    'motivo_devolucion' => 'Empleado dado de baja',
+                    'causa_devolucion' => Traslado::CAUSA_BAJA_EMPLEADO,
+                    'tecnico_devolucion_id_empleado' => Auth::user()?->empleado_id_empleado,
+                ]);
+            }
+
+            $empleado->update([
+                'estado_id_estado' => Estado::idBaja(), // Estado "Baja" leído de la tabla estado
+                'fecha_baja' => now()->toDateString(),
+            ]);
+
+            return $vigentes;
+        });
+
+        $mensaje = 'Empleado dado de baja exitosamente.';
+
+        if ($equiposLiberados->isNotEmpty()) {
+            $mensaje .= ' El equipo ' . $equiposLiberados->pluck('equipo.codigo_contable')->filter()->implode(', ') .
+                ' quedó disponible para asignar.';
+        }
+
+        return redirect()->route('empleados.index')->with('success', $mensaje);
     }
 }

@@ -31,10 +31,13 @@
         <div class="col-md-6">
             <label for="codigo_equipo" class="form-label fw-semibold">Código de Equipo <span class="text-danger">*</span></label>
             <input type="text" class="form-control @error('codigo_equipo') is-invalid @enderror" 
-                   id="codigo_equipo" name="codigo_equipo" 
+                   id="codigo_equipo" name="codigo_equipo" data-modo-crear="1"
                    placeholder="Ingrese código y presione fuera..." 
                    value="{{ old('codigo_equipo') }}" required>
-            
+
+            <!-- Aviso cuando el equipo ya está asignado a otro empleado (se le quitará) -->
+            <div id="avisoReasignacion" class="alert alert-warning small mt-2 mb-0 d-none" role="alert"></div>
+
             <!-- Tarjeta de información completa del equipo -->
             <div id="infoEquipo" class="mt-2 p-3 bg-light border rounded small shadow-sm" style="display: none;">
                 <span class="d-block text-success fw-bold mb-2"><i class="bi bi-check-circle me-1"></i>Equipo encontrado:</span>
