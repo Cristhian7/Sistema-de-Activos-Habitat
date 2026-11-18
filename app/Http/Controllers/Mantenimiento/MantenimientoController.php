@@ -19,11 +19,18 @@ class MantenimientoController extends Controller
     // Listado de mantenimientos
     public function index()
     {
-        $mantenimientos = Mantenimiento::with(['equipo', 'empleado', 'tecnico'])->paginate(10);
-        return view('mantenimiento.index', compact('mantenimientos'));
+        // Se traen todos (sin paginar) para que el buscador del listado filtre sobre el total, como en los otros módulos.
+        // Las fotos (campos binarios) no se cargan: el listado no las usa.
+        $mantenimientos = Mantenimiento::select([
+                'id_mantenimiento', 'equipo_id_equipo', 'empleado_id_empleado', 'tecnico_id_empleado',
+                'descripcion', 'fecha_mantenimiento',
+            ])
+            ->with(['equipo', 'empleado', 'tecnico'])
+            ->orderByDesc('fecha_mantenimiento')
+            ->orderByDesc('id_mantenimiento')
+            ->get();
 
-       // $mantenimientos = Mantenimiento::with(['equipo', 'empleado'])->get();
-        //return view('mantenimiento.index', compact('mantenimientos'));
+        return view('mantenimiento.index', compact('mantenimientos'));
     }
 
     // Formulario de creación

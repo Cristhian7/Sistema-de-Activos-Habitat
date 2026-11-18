@@ -116,7 +116,7 @@
 </div>
 
 <div class="mt-4 mb-5 text-end">
-    <a href="{{ route('mantenimientos.imprimir', $mantenimiento->id_mantenimiento) }}" class="btn btn-success px-4 py-2 fw-semibold" target="_blank">
+    <a href="{{ route('mantenimientos.imprimir', $mantenimiento->id_mantenimiento) }}" class="btn btn-success px-4 py-2 fw-semibold" target="_blank" rel="opener">
         <i class="bi bi-printer me-1"></i> Imprimir
     </a>
 </div>

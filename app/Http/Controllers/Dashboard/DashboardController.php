@@ -173,6 +173,8 @@ class DashboardController extends Controller
         }
 
         return $lista
+            // Solo se muestran los movimientos de módulos que el rol puede ver (ej. el Técnico no ve mantenimientos)
+            ->filter(fn ($i) => Permisos::puede($i['permiso']))
             ->sortByDesc(fn ($i) => sprintf('%s-%010d', $i['fecha'] ? Carbon::parse($i['fecha'])->format('Y-m-d') : '0000-00-00', $i['orden']))
             ->take($n)
             ->values();

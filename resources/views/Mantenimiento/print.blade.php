@@ -216,7 +216,7 @@
 
     <div class="barra-acciones">
         <button class="btn btn-print" onclick="window.print()">Imprimir</button>
-        <a class="btn btn-back" href="{{ route('mantenimientos.show', $mantenimiento->id_mantenimiento) }}">Volver</a>
+        <a class="btn btn-back" href="{{ route('mantenimientos.show', $mantenimiento->id_mantenimiento) }}" onclick="if (window.opener && !window.opener.closed) { window.opener.focus(); window.close(); var h = this.href; setTimeout(function () { window.location.href = h; }, 300); return false; }">Volver</a>
     </div>
 
     @php

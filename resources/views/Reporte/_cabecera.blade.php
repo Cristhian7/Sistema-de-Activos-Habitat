@@ -5,7 +5,7 @@
         <a href="{{ route('reportes.index') }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-grid me-1"></i> Todos los reportes
         </a>
-        <a href="{{ route($ruta . '.imprimir', request()->query()) }}" target="_blank" class="btn btn-success btn-sm">
+        <a href="{{ route($ruta . '.imprimir', request()->query()) }}" target="_blank" rel="opener" class="btn btn-success btn-sm">
             <i class="bi bi-printer me-1"></i> Imprimir reporte
         </a>
     </div>

@@ -39,6 +39,7 @@ return [
         // El Técnico no sube ni modifica nada: solo consulta y revisa lo que suben el Administrador y el Analista.
         // "bajas.ver" es solo lectura y hace falta para abrir las notificaciones de bajas.
         'tecnico' => [
+            'dashboard.ver',
             'equipos.ver',
             'empleados.ver',
             'traslados.ver',

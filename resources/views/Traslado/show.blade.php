@@ -200,7 +200,7 @@
 </div>
 
 <div class="mt-4 mb-5 text-end">
-    <a href="{{ route('traslados.imprimir', $traslado->id_traslado) }}" class="btn btn-success px-4 py-2 fw-semibold" target="_blank">
+    <a href="{{ route('traslados.imprimir', $traslado->id_traslado) }}" class="btn btn-success px-4 py-2 fw-semibold" target="_blank" rel="opener">
         <i class="bi bi-printer me-1"></i> Imprimir
     </a>
     @if($traslado->vigente && \App\Support\Permisos::puede('traslados.editar'))

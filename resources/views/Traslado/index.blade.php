@@ -173,7 +173,7 @@
                             <a href="{{ route('traslados.show', $traslado->id_traslado) }}" class="btn btn-outline-secondary btn-sm" title="Ver">
                                 <i class="bi bi-eye"></i>
                             </a>
-                            <a href="{{ route('traslados.imprimir', $traslado->id_traslado) }}" class="btn btn-outline-success btn-sm" title="Imprimir" target="_blank">
+                            <a href="{{ route('traslados.imprimir', $traslado->id_traslado) }}" class="btn btn-outline-success btn-sm" title="Imprimir" target="_blank" rel="opener">
                                 <i class="bi bi-printer"></i>
                             </a>
                             @if($sePuedeDevolver && \App\Support\Permisos::puede('traslados.editar'))

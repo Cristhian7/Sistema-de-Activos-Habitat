@@ -31,6 +31,20 @@
             min-height: calc(100vh - 56px);
         }
 
+        /* Menú fijo: al bajar en la página el menú se queda a la vista (solo en pantallas medianas o grandes).
+           Si el menú es más alto que la pantalla, tiene su propio scroll. */
+        @media (min-width: 768px) {
+            .sidebar-custom {
+                position: sticky;
+                top: var(--navbar-h, 62px);     /* alto de la barra superior (se mide con el script del final) */
+                align-self: flex-start;
+                min-height: 0;
+                height: calc(100vh - var(--navbar-h, 62px));
+                overflow-y: auto;
+                overscroll-behavior: contain;
+            }
+        }
+
         .sidebar-heading {
             color: #94a3b8;
             letter-spacing: 0.05em;
@@ -252,5 +266,21 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // El menú lateral fijo se pega justo debajo de la barra superior, sea cual sea su alto
+        (function () {
+            var barra = document.querySelector('nav.navbar');
+            if (!barra) return;
+            function medir() {
+                document.documentElement.style.setProperty('--navbar-h', barra.offsetHeight + 'px');
+            }
+            medir();
+            window.addEventListener('resize', medir);
+            // La barra cambia de alto al abrir/cerrar su menú en pantallas pequeñas
+            document.getElementById('navbarNav')?.addEventListener('shown.bs.collapse', medir);
+            document.getElementById('navbarNav')?.addEventListener('hidden.bs.collapse', medir);
+        })();
+    </script>
 </body>
 </html>

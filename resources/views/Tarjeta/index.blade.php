@@ -76,7 +76,7 @@
                                 <a href="{{ route('tarjetas.show', $empleado->id_empleado) }}" class="btn btn-outline-secondary btn-sm" title="Ver tarjeta">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ route('tarjetas.imprimir', $empleado->id_empleado) }}" class="btn btn-outline-success btn-sm" title="Imprimir tarjeta" target="_blank">
+                                <a href="{{ route('tarjetas.imprimir', $empleado->id_empleado) }}" class="btn btn-outline-success btn-sm" title="Imprimir tarjeta" target="_blank" rel="opener">
                                     <i class="bi bi-printer"></i>
                                 </a>
                             </td>

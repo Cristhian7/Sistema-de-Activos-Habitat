@@ -105,7 +105,7 @@
                             <a href="{{ route('bajas.show', $baja->id_baja) }}" class="btn btn-outline-secondary btn-sm" title="Ver">
                                 <i class="bi bi-eye"></i>
                             </a>
-                            <a href="{{ route('bajas.imprimir', $baja->id_baja) }}" class="btn btn-outline-success btn-sm" title="Imprimir" target="_blank">
+                            <a href="{{ route('bajas.imprimir', $baja->id_baja) }}" class="btn btn-outline-success btn-sm" title="Imprimir" target="_blank" rel="opener">
                                 <i class="bi bi-printer"></i>
                             </a>
                         </td>
