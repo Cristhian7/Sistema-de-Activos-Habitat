@@ -73,6 +73,22 @@ Route::post('/traslados/{id}/documento', [App\Http\Controllers\Documento\Documen
 Route::get('/bajas/{id}/documento', [App\Http\Controllers\Documento\DocumentoFirmadoController::class, 'ver'])->defaults('tipo', 'bajas')->name('bajas.documento.ver')->middleware('permiso:bajas.ver');
 Route::post('/bajas/{id}/documento', [App\Http\Controllers\Documento\DocumentoFirmadoController::class, 'subir'])->defaults('tipo', 'bajas')->name('bajas.documento.subir')->middleware('permiso:bajas.crear,bajas.editar');
 
+//------------------CATÁLOGOS: MARCAS Y MODELOS------------------//
+// Solo el Administrador: ningún otro rol tiene permisos marcas.* ni modelos.* (ver config/permisos.php)
+Route::get('/marcas', [App\Http\Controllers\Marca\MarcaController::class, 'index'])->name('marcas.index')->middleware('permiso:marcas.ver');
+Route::get('/marcas/create', [App\Http\Controllers\Marca\MarcaController::class, 'create'])->name('marcas.create')->middleware('permiso:marcas.crear');
+Route::post('/marcas', [App\Http\Controllers\Marca\MarcaController::class, 'store'])->name('marcas.store')->middleware('permiso:marcas.crear');
+Route::get('/marcas/{id}/edit', [App\Http\Controllers\Marca\MarcaController::class, 'edit'])->name('marcas.edit')->middleware('permiso:marcas.editar');
+Route::put('/marcas/{id}', [App\Http\Controllers\Marca\MarcaController::class, 'update'])->name('marcas.update')->middleware('permiso:marcas.editar');
+Route::delete('/marcas/{id}', [App\Http\Controllers\Marca\MarcaController::class, 'destroy'])->name('marcas.destroy')->middleware('permiso:marcas.eliminar');
+
+Route::get('/modelos', [App\Http\Controllers\Modelo\ModeloController::class, 'index'])->name('modelos.index')->middleware('permiso:modelos.ver');
+Route::get('/modelos/create', [App\Http\Controllers\Modelo\ModeloController::class, 'create'])->name('modelos.create')->middleware('permiso:modelos.crear');
+Route::post('/modelos', [App\Http\Controllers\Modelo\ModeloController::class, 'store'])->name('modelos.store')->middleware('permiso:modelos.crear');
+Route::get('/modelos/{id}/edit', [App\Http\Controllers\Modelo\ModeloController::class, 'edit'])->name('modelos.edit')->middleware('permiso:modelos.editar');
+Route::put('/modelos/{id}', [App\Http\Controllers\Modelo\ModeloController::class, 'update'])->name('modelos.update')->middleware('permiso:modelos.editar');
+Route::delete('/modelos/{id}', [App\Http\Controllers\Modelo\ModeloController::class, 'destroy'])->name('modelos.destroy')->middleware('permiso:modelos.eliminar');
+
 //------------------NOTIFICACIONES------------------//
 // Cada usuario solo ve y revisa las suyas (lo valida el controlador)
 Route::get('/notificaciones', [App\Http\Controllers\Notificacion\NotificacionController::class, 'index'])->name('notificaciones.index')->middleware('permiso:notificaciones.ver');
@@ -83,6 +99,7 @@ Route::post('/notificaciones/{id}/revisar', [App\Http\Controllers\Notificacion\N
 Route::get('/mantenimientos', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'index'])->name('mantenimientos.index')->middleware('permiso:mantenimientos.ver');
 Route::get('/mantenimientos/create', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'create'])->name('mantenimientos.create')->middleware('permiso:mantenimientos.crear');
 Route::post('/mantenimientos', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'store'])->name('mantenimientos.store')->middleware('permiso:mantenimientos.crear');
+Route::get('/mantenimientos/{id}/piezas/{pieza}/imagen', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'imagenPieza'])->name('mantenimientos.pieza.imagen')->middleware('permiso:mantenimientos.ver');
 Route::get('/mantenimientos/{id}/imprimir', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'imprimir'])->name('mantenimientos.imprimir')->middleware('permiso:mantenimientos.ver');
 Route::get('/mantenimientos/{id}', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'show'])->name('mantenimientos.show')->middleware('permiso:mantenimientos.ver');
 Route::get('/mantenimientos/{id}/edit', [App\Http\Controllers\Mantenimiento\MantenimientoController::class, 'edit'])->name('mantenimientos.edit')->middleware('permiso:mantenimientos.editar');

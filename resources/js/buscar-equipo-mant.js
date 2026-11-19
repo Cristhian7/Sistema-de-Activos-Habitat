@@ -28,8 +28,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (el) el.value = valor ?? '';
     }
 
+    // El campo Estado vuelve a "Activo" (su valor por defecto) cuando no hay un equipo cargado
+    const estadoPorDefecto = (document.getElementById('m_estado') || {}).dataset
+        ? (document.getElementById('m_estado').dataset.default || '')
+        : '';
+
     function limpiarCampos() {
         Object.values(campos).forEach(function (id) { setValor(id, ''); });
+        setValor('m_estado', estadoPorDefecto);
     }
 
     function buscarEquipo() {

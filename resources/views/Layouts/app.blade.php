@@ -254,6 +254,35 @@
                         </div>
                     </li>
                     @endpuede
+                    {{-- Catálogos (Marcas y Modelos): solo para quien tenga permiso (Administrador) --}}
+                    @puede('marcas.ver', 'modelos.ver')
+                    @php $enCatalogos = request()->routeIs('marcas.*', 'modelos.*'); @endphp
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center {{ $enCatalogos ? 'active' : '' }}" data-bs-toggle="collapse"
+                           href="#submenuCatalogos" role="button" aria-expanded="{{ $enCatalogos ? 'true' : 'false' }}" aria-controls="submenuCatalogos">
+                            <i class="bi bi-collection me-2"></i> Catálogos
+                            <i class="bi bi-chevron-down ms-auto small"></i>
+                        </a>
+                        <div class="collapse {{ $enCatalogos ? 'show' : '' }}" id="submenuCatalogos">
+                            <ul class="nav flex-column submenu-reportes ms-3 mt-1 gap-1">
+                                @puede('marcas.ver')
+                                <li class="nav-item">
+                                    <a class="nav-link py-2 small {{ request()->routeIs('marcas.*') ? 'sub-active' : '' }}" href="{{ route('marcas.index') }}">
+                                        <i class="bi bi-tags me-2"></i>Marcas
+                                    </a>
+                                </li>
+                                @endpuede
+                                @puede('modelos.ver')
+                                <li class="nav-item">
+                                    <a class="nav-link py-2 small {{ request()->routeIs('modelos.*') ? 'sub-active' : '' }}" href="{{ route('modelos.index') }}">
+                                        <i class="bi bi-motherboard me-2"></i>Modelos
+                                    </a>
+                                </li>
+                                @endpuede
+                            </ul>
+                        </div>
+                    </li>
+                    @endpuede
                 </ul>
             </nav>
 

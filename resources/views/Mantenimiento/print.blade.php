@@ -127,6 +127,23 @@
         table.datos td.val { width: 32%; }
         .texto-largo { white-space: pre-line; }
 
+        /* Piezas cambiadas o agregadas (compacto para que la hoja siga siendo de una página) */
+        .subtitulo-piezas {
+            font-family: "Cambria", "Georgia", serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #14532d;
+            margin: 12px 0 4px;
+        }
+        table.piezas { width: 100%; border-collapse: collapse; font-size: 12px; }
+        table.piezas th, table.piezas td { border: 1px solid #000; padding: 3px 8px; vertical-align: middle; }
+        table.piezas th { background: #c9d7ec; text-transform: uppercase; font-size: 10px; text-align: left; }
+        table.piezas td.fw { font-weight: 700; }
+        table.piezas th.foto, table.piezas td.foto { width: 64px; text-align: center; }
+        table.piezas td.foto img { max-width: 56px; max-height: 40px; object-fit: contain; display: block; margin: 0 auto; }
+
         /* Fotografías del mantenimiento */
         .imagenes {
             display: flex;
@@ -137,7 +154,7 @@
         }
         .imagenes img {
             max-width: 330px;
-            max-height: 300px;
+            max-height: {{ max(110, 300 - 34 * $mantenimiento->piezas->count()) }}px;   /* más piezas = fotos generales más chicas, para que todo quepa en la hoja */
             object-fit: contain;
             box-shadow: 0 4px 12px rgba(0,0,0,.35);
             border-radius: 6px;
@@ -309,6 +326,28 @@
                 <td class="val" colspan="3">{{ \Carbon\Carbon::parse($mantenimiento->fecha_mantenimiento)->format('d/m/Y') }}</td>
             </tr>
         </table>
+
+        @if($mantenimiento->piezas->isNotEmpty())
+            <!-- Piezas cambiadas o agregadas -->
+            <div class="subtitulo-piezas">Piezas cambiadas o agregadas</div>
+            <table class="piezas">
+                <thead>
+                    <tr><th>Pieza</th><th>Acción</th><th>Detalle</th><th class="foto">Foto</th></tr>
+                </thead>
+                <tbody>
+                    @foreach($mantenimiento->piezas as $pieza)
+                        <tr>
+                            <td class="fw">{{ $pieza->tipo_pieza }}</td>
+                            <td>{{ $pieza->accion_texto }}</td>
+                            <td>{{ $pieza->descripcion ?: '—' }}</td>
+                            <td class="foto">
+                                <img src="{{ route('mantenimientos.pieza.imagen', [$mantenimiento->id_mantenimiento, $pieza->id_mantenimiento_pieza]) }}" alt="Foto: {{ $pieza->tipo_pieza }}">
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
 
         <!-- Zona central: fotografías del mantenimiento (crece para llenar la hoja) -->
         <div class="centro">

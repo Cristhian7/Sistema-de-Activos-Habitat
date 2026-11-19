@@ -270,7 +270,8 @@ class ReporteController extends Controller
     {
         $f = $this->filtrosFechaYTecnico($request) + ['codigo' => $this->texto($request->query('codigo'))];
 
-        $mantenimientos = Mantenimiento::with(['equipo', 'empleado.afiliado', 'tecnico'])
+        $mantenimientos = Mantenimiento::select(['id_mantenimiento', 'equipo_id_equipo', 'empleado_id_empleado', 'tecnico_id_empleado', 'descripcion', 'fecha_mantenimiento'])
+            ->with(['equipo', 'empleado.afiliado', 'tecnico', 'piezas'])
             ->when($f['codigo'], fn ($q, $v) => $q->whereHas('equipo', fn ($e) => $e->where('codigo_contable', 'like', "%{$v}%")))
             ->when($f['desde'], fn ($q, $v) => $q->whereDate('fecha_mantenimiento', '>=', $v))
             ->when($f['hasta'], fn ($q, $v) => $q->whereDate('fecha_mantenimiento', '<=', $v))

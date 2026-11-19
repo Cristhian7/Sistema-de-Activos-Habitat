@@ -55,7 +55,6 @@ class EquipoController extends Controller
         'ex' => 'required|string|max:45',
         'fecha_compra' => 'required|date',
         'precio_compra' => 'required|numeric|min:0',
-        'valor_libros' => 'required|numeric|min:0',
         'estado_id_estado' => 'required|integer',
         'notas_adicionales' => 'required|string|max:1000',
         // Si ya hay una imagen temporal guardada, permitimos que el archivo sea opcional en este intento fallido
@@ -77,7 +76,6 @@ class EquipoController extends Controller
         'ex.required' => 'Debe ingresar el express code del equipo.',
         'fecha_compra.required' => 'Debe ingresar la fecha de compra del equipo.',
         'precio_compra.required' => 'Debe ingresar el precio de compra del equipo.',
-        'valor_libros.required' => 'Debe ingresar el valor en libros actual del equipo.',
         'notas_adicionales.required' => 'Debe ingresar el motivo del cual se configuró este equipo.',
         'imagen_equipo.required' => 'Debe ingresar la fotografía del equipo completo',
         'imagen_equipo.required_without' => 'Debe ingresar la fotografía del equipo completo',
@@ -104,7 +102,8 @@ class EquipoController extends Controller
             ->withInput($inputData);
     }
 
-    $data = $request->all();
+    // El valor en libros no se captura: lo calcula el sistema (depreciación a 3 años desde la fecha de compra)
+    $data = $request->except('valor_libros');
     // Todo equipo nuevo nace Activo (id leído de la tabla estado)
     $data['estado_id_estado'] = Estado::idActivo();
 
@@ -158,6 +157,8 @@ class EquipoController extends Controller
         'marca_id_marca'             => 'required|integer', // <--- ¡Incluido y validado correctamente![cite: 11]
         'modelo_id_modelo'           => 'required|integer',
         'estado_id_estado'           => 'required|integer',
+        'fecha_compra'               => 'nullable|date',
+        'precio_compra'              => 'nullable|numeric|min:0',
         'imagen_equipo'              => 'nullable|image|max:2048',
         'imagen_codigo'              => 'nullable|image|max:2048',
     ], [
@@ -176,7 +177,8 @@ class EquipoController extends Controller
 
 
     $equipo = Equipo::findOrFail($id);
-    $data = $request->except(['_token', '_method']);
+    // El valor en libros lo calcula el sistema; nunca se toma del formulario
+    $data = $request->except(['_token', '_method', 'valor_libros']);
 
     // Manejo de la imagen del equipo
     if ($request->hasFile('imagen_equipo')) {

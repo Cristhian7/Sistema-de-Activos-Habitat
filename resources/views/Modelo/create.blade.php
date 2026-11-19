@@ -1,0 +1,59 @@
+@extends('layouts.app')
+
+@section('title', 'Nuevo Modelo - Control de Activos')
+
+@section('content')
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 fw-bold text-dark"><i class="bi bi-motherboard me-2"></i>Nuevo Modelo</h1>
+    <a href="{{ route('modelos.index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Volver al listado
+    </a>
+</div>
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        @if($marcas->isEmpty())
+            <div class="alert alert-warning mb-0">
+                Primero crea una marca para poder registrar modelos.
+                @puede('marcas.crear')
+                    <a href="{{ route('marcas.create') }}" class="alert-link">Nueva marca</a>
+                @endpuede
+            </div>
+        @else
+            <form action="{{ route('modelos.store') }}" method="POST">
+                @csrf
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="marca_id_marca" class="form-label fw-semibold">Marca <span class="text-danger">*</span></label>
+                        <select class="form-select @error('marca_id_marca') is-invalid @enderror" id="marca_id_marca" name="marca_id_marca" required>
+                            <option value="">Seleccione una marca...</option>
+                            @foreach($marcas as $marca)
+                                <option value="{{ $marca->id_marca }}" @selected(old('marca_id_marca') == $marca->id_marca)>{{ $marca->nombre_marca }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="nombre_modelo" class="form-label fw-semibold">Nombre del modelo <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('nombre_modelo') is-invalid @enderror" id="nombre_modelo" name="nombre_modelo"
+                               value="{{ old('nombre_modelo') }}" maxlength="45" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{{ route('modelos.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Guardar</button>
+                </div>
+            </form>
+        @endif
+    </div>
+</div>
+@endsection

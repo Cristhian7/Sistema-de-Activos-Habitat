@@ -27,6 +27,14 @@ class Mantenimiento extends Model
         'imagen_mantenimiento_2',
     ];
 
+    // Piezas cambiadas o agregadas (sin cargar sus fotografías; se piden por separado)
+    public function piezas()
+    {
+        return $this->hasMany(MantenimientoPieza::class, 'mantenimiento_id_mantenimiento', 'id_mantenimiento')
+            ->select(MantenimientoPieza::COLUMNAS_SIN_IMAGEN)
+            ->orderBy('id_mantenimiento_pieza');
+    }
+
     // Relación con el equipo
     public function equipo()
     {

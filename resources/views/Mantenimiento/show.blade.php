@@ -79,6 +79,38 @@
         </div>
     </div>
 
+    <!-- Piezas cambiadas o agregadas -->
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm p-4">
+            <h5 class="fw-bold text-primary mb-3"><i class="bi bi-motherboard me-2"></i>Piezas Cambiadas o Agregadas</h5>
+            @if($mantenimiento->piezas->isEmpty())
+                <span class="text-muted">No se registraron piezas en este mantenimiento.</span>
+            @else
+                <div class="row g-3">
+                    @foreach($mantenimiento->piezas as $pieza)
+                        <div class="col-md-6 col-xl-4">
+                            <div class="border rounded p-3 h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong>{{ $pieza->tipo_pieza }}</strong>
+                                    <span class="badge {{ $pieza->accion === 'AGREGADO' ? 'bg-success' : 'bg-warning text-dark' }}">{{ $pieza->accion_texto }}</span>
+                                </div>
+                                @if($pieza->descripcion)
+                                    <div class="small text-muted mb-2">{{ $pieza->descripcion }}</div>
+                                @endif
+                                @php $urlFoto = route('mantenimientos.pieza.imagen', [$mantenimiento->id_mantenimiento, $pieza->id_mantenimiento_pieza]); @endphp
+                                <a href="{{ $urlFoto }}" target="_blank" title="Ver la fotografía completa">
+                                    <img src="{{ $urlFoto }}" alt="Fotografía: {{ $pieza->tipo_pieza }}" loading="lazy"
+                                         class="img-fluid rounded border bg-light"
+                                         style="width: 100%; max-height: 220px; object-fit: contain;">
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </div>
+
     <!-- Fotografías del Mantenimiento -->
     <div class="col-md-12">
         <div class="card border-0 shadow-sm p-4">

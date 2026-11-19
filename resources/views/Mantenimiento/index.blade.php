@@ -41,6 +41,7 @@
                             <th>Nombre Equipo</th>
                             <th>Empleado</th>
                             <th>Descripción</th>
+                            <th>Piezas</th>
                             <th>Fecha</th>
                             <th>Técnico</th>
                             <th class="text-end">Acciones</th>
@@ -68,6 +69,16 @@
                                 <td>{{ $mantenimiento->equipo->nombre_equipo ?? 'N/A' }}</td>
                                 <td>{{ $mantenimiento->empleado->nombre_empleado ?? 'N/A' }} {{ $mantenimiento->empleado->apellido_empleado ?? '' }}</td>
                                 <td>{{ Str::limit($mantenimiento->descripcion, 50) }}</td>
+                                <td>
+                                    @if($mantenimiento->piezas->isNotEmpty())
+                                        <span class="badge bg-info text-dark" title="{{ $mantenimiento->piezas->pluck('resumen')->implode(', ') }}">
+                                            <i class="bi bi-motherboard me-1"></i>{{ $mantenimiento->piezas->count() }}
+                                        </span>
+                                        <div class="small text-muted">{{ Str::limit($mantenimiento->piezas->pluck('tipo_pieza')->unique()->implode(', '), 40) }}</div>
+                                    @else
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </td>
                                 <td>{{ $mantenimiento->fecha_mantenimiento }}</td>
                                 <td class="fw-semibold">
                                     @if($mantenimiento->tecnico)
@@ -87,12 +98,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No hay mantenimientos registrados.</td>
+                                <td colspan="8" class="text-center text-muted py-4">No hay mantenimientos registrados.</td>
                             </tr>
                         @endforelse
                         <!-- Fila mostrada cuando el filtro no encuentra coincidencias -->
                         <tr id="filaSinResultados" style="display: none;">
-                            <td colspan="7" class="text-center text-muted py-4">
+                            <td colspan="8" class="text-center text-muted py-4">
                                 <i class="bi bi-search me-2"></i>No se encontraron mantenimientos que coincidan con la búsqueda.
                             </td>
                         </tr>

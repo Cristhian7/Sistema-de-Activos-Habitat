@@ -195,11 +195,7 @@
                         @enderror
                     </div>
                     <div class="col-md-4">
-                        <label for="valor_libros" class="form-label fw-semibold">Valor en Libros</label>
-                        <input type="number" step="0.01" class="form-control @error('valor_libros') is-invalid @enderror" id="valor_libros" name="valor_libros" value="{{ old('valor_libros', $equipo->valor_libros) }}">
-                        @error('valor_libros')
-                        <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
+                        @include('Equipo._valor_libros', ['equipo' => $equipo])
                     </div>
                     <div class="col-md-12">
                         <label for="notas_adicionales" class="form-label fw-semibold">Notas Adicionales</label>

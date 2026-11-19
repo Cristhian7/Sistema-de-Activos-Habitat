@@ -75,6 +75,7 @@
                     <th>Empleado</th>
                     <th>Afiliado</th>
                     <th>Descripción</th>
+                    <th>Piezas</th>
                     <th>Técnico</th>
                 </tr>
             </thead>
@@ -86,11 +87,12 @@
                         <td>{{ trim(($m->empleado->nombre_empleado ?? '') . ' ' . ($m->empleado->apellido_empleado ?? '')) ?: 'N/A' }}</td>
                         <td>{{ $m->empleado->afiliado->nombre_afiliado ?? 'N/A' }}</td>
                         <td>{{ $imprimir ? $m->descripcion : \Illuminate\Support\Str::limit($m->descripcion, 60) }}</td>
+                        <td>{{ $m->piezas->isNotEmpty() ? $m->piezas->pluck('resumen')->implode(', ') : '—' }}</td>
                         <td>{{ $m->tecnico ? $m->tecnico->nombre_empleado . ' ' . $m->tecnico->apellido_empleado : 'Sin técnico registrado' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No hay mantenimientos con esos filtros.</td>
+                        <td colspan="7" class="text-center text-muted py-4">No hay mantenimientos con esos filtros.</td>
                     </tr>
                 @endforelse
             </tbody>

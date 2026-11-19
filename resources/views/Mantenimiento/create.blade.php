@@ -4,7 +4,7 @@
 
 @section('content')
 
-@vite(['resources/js/buscar-equipo-mant.js', 'resources/js/buscar-codl4.js'])
+@vite(['resources/js/buscar-equipo-mant.js', 'resources/js/buscar-codl4.js', 'resources/js/mantenimiento-piezas.js'])
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2 fw-bold text-dark"><i class="bi bi-tools me-2"></i>Registrar Nuevo Mantenimiento</h1>
@@ -70,7 +70,9 @@
 
                     <div class="col-md-4">
                         <label for="m_estado" class="form-label fw-semibold">Estado</label>
-                        <input type="text" class="form-control bg-light" id="m_estado" readonly>
+                        {{-- Por defecto "Activo" (leído de la tabla estado); al buscar el equipo muestra su estado real --}}
+                        <input type="text" class="form-control bg-light" id="m_estado" readonly
+                               value="{{ $estadoActivo->nombre_estado }}" data-default="{{ $estadoActivo->nombre_estado }}">
                     </div>
                 </div>
             </div>
@@ -178,6 +180,36 @@
                     </div>
 
                 </div>
+            </div>
+        </div>
+
+        <!-- Piezas cambiadas o agregadas -->
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm p-4">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                    <div>
+                        <h5 class="fw-bold text-primary mb-1"><i class="bi bi-motherboard me-2"></i>Piezas Cambiadas o Agregadas</h5>
+                        <p class="text-muted small mb-0">Si se cambió o se agregó una pieza (memoria RAM, SSD, teclado, pantalla, etc.), regístrela aquí. Cada pieza lleva su fotografía obligatoria.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="btnAgregarPieza">
+                        <i class="bi bi-plus-lg me-1"></i> Agregar pieza
+                    </button>
+                </div>
+
+                <div id="sinPiezas" class="text-muted small border rounded p-3 text-center {{ old('piezas') ? 'd-none' : '' }}">
+                    No se han agregado piezas. Si el mantenimiento no cambió ninguna, puede continuar sin agregar.
+                </div>
+
+                <div id="listaPiezas" data-max="{{ \App\Models\Mantenimiento\MantenimientoPieza::MAX_POR_MANTENIMIENTO }}">
+                    @foreach((array) old('piezas', []) as $i => $fila)
+                        @include('Mantenimiento._pieza_fila', ['i' => $i, 'fila' => $fila])
+                    @endforeach
+                </div>
+
+                {{-- Molde de una fila nueva (el script reemplaza __INDICE__ por el número) --}}
+                <template id="plantillaPieza">
+                    @include('Mantenimiento._pieza_fila', ['i' => '__INDICE__', 'fila' => []])
+                </template>
             </div>
         </div>
 

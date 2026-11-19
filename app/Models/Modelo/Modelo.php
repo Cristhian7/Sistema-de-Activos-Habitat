@@ -17,4 +17,10 @@ class Modelo extends Model
     {
         return $this->belongsTo(\App\Models\Marca\Marca::class, 'marca_id_marca', 'id_marca');
     }
+
+    // Equipos de este modelo
+    public function equipos()
+    {
+        return $this->hasMany(\App\Models\Equipo\Equipo::class, 'modelo_id_modelo', 'id_modelo');
+    }
 }

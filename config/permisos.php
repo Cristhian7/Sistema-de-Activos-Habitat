@@ -15,7 +15,7 @@
 |
 | "*" significa todo el sistema. Para cambiar lo que puede hacer un rol basta con editar esta lista.
 |
-| Módulos: dashboard, equipos, empleados, traslados, mantenimientos, bajas, bitacora, tarjetas, reportes
+| Módulos: dashboard, equipos, empleados, traslados, mantenimientos, bajas, bitacora, tarjetas, reportes, notificaciones, marcas, modelos
 |
 */
 
